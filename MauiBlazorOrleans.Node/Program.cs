@@ -25,6 +25,12 @@ using var host = new HostBuilder()
                      //           options.ServiceId = "OrleansBasics";
                      //       });
 
+                     builder.Configure<ClusterOptions>(options =>
+                     {
+                         options.ClusterId = "dev";
+                         options.ServiceId = "OrleansBasics";
+                     });
+
                      builder.UseAdoNetClustering(options =>
                      {
                          options.ConnectionString = @"Data Source=.\sqlexpress;Initial Catalog=MauiBlazorOrleans;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True;";

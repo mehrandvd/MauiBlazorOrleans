@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Orleans;
 using Orleans.Configuration;
 using Orleans.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MauiBlazorOrleans.Client;
 
@@ -15,7 +16,7 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
-			.ConfigureFonts(fonts =>
+            .ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 			});
@@ -26,7 +27,12 @@ public static class MauiProgram
 
         builder.Services.AddOrleansClient(clientBuilder =>
         {
-            clientBuilder.UseLocalhostClustering();
+            //clientBuilder.UseLocalhostClustering();
+
+           
+
+           
+
             clientBuilder.UseAdoNetClustering(options =>
             {
                 options.ConnectionString =
@@ -35,10 +41,10 @@ public static class MauiProgram
             });
 
             clientBuilder.Configure<ClusterOptions>(options =>
-                             {
-                                 options.ClusterId = "dev";
-                                 options.ServiceId = "OrleansBasics";
-                             });
+            {
+                options.ClusterId = "dev";
+                options.ServiceId = "OrleansBasics";
+            });
         });
 
 #endif
@@ -52,9 +58,10 @@ public static class MauiProgram
 
 		var app = builder.Build();
 
-        var c = app.Services.GetRequiredService<IClusterClient>();
-        var g = c.GetGrain<IFulaFileGrain>("friends");
-        var t = g.GetFileInfoAsync("GoodMorning.jpg");
+        var _hostService = app.Services.GetService<IHostedService>();
+
+        _hostService.StartAsync(CancellationToken.None).GetAwaiter().GetResult();
+
 
 
         return app;
